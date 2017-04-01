@@ -9,13 +9,15 @@ int m2Logic2 = 6;
 int leftSensor = A2;
 int middleSensor = A1;
 int rightSensor = A0;
-int baseReading = 40;//Callibrate
+int baseReadingWall = 40;//Callibrate
+int baseReading = 40; //Callibrate
 int encoder1 = ;//FIXME
 int encoder2 = ;//FIXME
-
+int motorStatus = 0; //0=halt/1=foward/2=left/3=right
 
 void calibrate(){
- baseReading = digitalRead(leftSensor);
+ baseReadingWall = digitalRead(leftSensor);
+ baseReading = digitalRead(middleSensor);
 }
 void start()
 {
@@ -41,6 +43,7 @@ void start()
 void forward( )
 {
   int i = 150;
+  motorStatus = 1;
   digitalWrite(m1Enable, HIGH); //m1 is left motor, m2 is right motor
   digitalWrite(m2Enable, HIGH);
   digitalWrite(m1Logic1, LOW);
@@ -52,6 +55,7 @@ void forward( )
 }
 void left()
 {
+  motorStatus = 2;
   digitalWrite(m1Enable, HIGH);
   digitalWrite(m2Enable, HIGH);
   digitalWrite(m2Logic1, LOW);
@@ -62,6 +66,7 @@ void left()
 
 void right()
 {
+  motorStatus = 3;
   digitalWrite(m1Enable, HIGH);
   digitalWrite(m2Enable, HIGH);
   digitalWrite(m1Logic1, LOW);
@@ -79,6 +84,7 @@ void right()
 
 void halt()
 {
+  motorStatus = 0;
   digitalWrite(m1Enable, LOW);
   digitalWrite(m2Enable, LOW);
 }
@@ -103,8 +109,10 @@ void setup()
   
 }
 
-void loop() {
-//55555555555555555555555555555555555
+void loop() 
+{
+  //State machine
+  //
 
-}
+
 }
