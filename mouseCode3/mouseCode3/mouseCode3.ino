@@ -25,7 +25,7 @@ int midVal = 0;
 int rightVal = 0;
 int wallCase = 0;
 int deadEndFlag = 0;
-int offsetValVal = 0;
+int offsetVal = 0;
 int dir = 0; //0=north/1=east/2=south/3=west
 int leftDistance = 0;
 int rightDistance = 0;
@@ -109,14 +109,14 @@ void start()
 
 void forward(int m1Speed, int m2Speed)
 {
-  int motorValue = 150;
+  
   motorStatus = 1;
   digitalWrite(m1Enable, HIGH); //m1 is left motor, m2 is right motor
   digitalWrite(m2Enable, HIGH);
   digitalWrite(m1Logic1, LOW);
   digitalWrite(m2Logic1, LOW); 
-  analogWrite(m1Logic2, motorValue);
-  analogWrite(m2Logic2, motorValue);
+  analogWrite(m1Logic2, m1Speed);
+  analogWrite(m2Logic2, m2Speed);
   while (encoderCount1 < tickGoal)
   {
   if(digitalRead(encoder1) == 1)
@@ -126,7 +126,25 @@ void forward(int m1Speed, int m2Speed)
   }
   halt();
   encoderCount1 = 0;
+    //update location
+  if(dir == 0)
+  {
+    ++currY;
   }
+  else if(dir == 1)
+  {
+    ++currX;
+  }
+  else if(dir == 2)
+  {
+    --currY;
+  }
+  else if(dir == 3)
+  {
+    --currX;
+  }
+  }
+  
   
 
 void left()
@@ -150,6 +168,25 @@ void left()
   }
   halt();
   encoderCount2 = 0;
+
+      //update direction
+  if(dir == 0)
+  {
+    dir=4;
+  }
+  else if(dir == 1)
+  {
+    dir=0;
+  }
+  else if(dir == 2)
+  {
+    dir=1;
+  }
+  else if(dir == 3)
+  {
+    dir=3;
+  }
+
   }
 
   
@@ -174,8 +211,25 @@ void right()
   }
   halt();
   encoderCount1 = 0;
+    //update direction
+  if(dir == 0)
+  {
+    dir=1;
   }
-  
+  else if(dir == 1)
+  {
+    dir=2;
+  }
+  else if(dir == 2)
+  {
+    dir=3;
+  }
+  else if(dir == 3)
+  {
+    dir=4;
+  }
+  }
+
 
 
 void uTurn()
@@ -183,6 +237,8 @@ void uTurn()
   //turn around
   left();
   left();
+
+  
    
 }
 
@@ -260,6 +316,46 @@ rightVal = analogRead(rightSensor);
 //
  
 //if intersection => check for unvisited cells
+if((analogRead(leftSensor) <= baseReadingWall + offsetVal)&&(analogRead(middleSensor) <= baseReadingWall + offsetVal)&&(analogRead(rightSensor) <= baseReadingWall + offsetVal))
+//left, forward, or right
+{
+  
+}
+
+if((analogRead(leftSensor) <= baseReadingWall + offsetVal)&&(analogRead(middleSensor) <= baseReadingWall + offsetVal)&&(analogRead(rightSensor) >= baseReadingWall + offsetVal))
+//left, or forward
+{
+  
+}
+
+if((analogRead(leftSensor) >= baseReadingWall + offsetVal)&&(analogRead(middleSensor) <= baseReadingWall + offsetVal)&&(analogRead(rightSensor) <= baseReadingWall + offsetVal))
+// forward, or right
+{
+  
+}
+if((analogRead(leftSensor) <= baseReadingWall + offsetVal)&&(analogRead(middleSensor) >= baseReadingWall + offsetVal)&&(analogRead(rightSensor) <= baseReadingWall + offsetVal))
+//left, or right
+{
+  
+}
+
+if((analogRead(leftSensor) >= baseReadingWall + offsetVal)&&(analogRead(middleSensor) >= baseReadingWall + offsetVal)&&(analogRead(rightSensor) >= baseReadingWall + offsetVal))
+//dead end
+{
+  uTurn();
+}
+
+if((analogRead(leftSensor) <= baseReadingWall + offsetVal)&&(analogRead(middleSensor) >= baseReadingWall + offsetVal)&&(analogRead(rightSensor) >= baseReadingWall + offsetVal))
+//left
+{
+  left();
+}
+
+if((analogRead(leftSensor) >= baseReadingWall + offsetVal)&&(analogRead(middleSensor) >= baseReadingWall + offsetVal)&&(analogRead(rightSensor) <= baseReadingWall + offsetVal))
+//right
+{
+  right();
+}
 //take direction that hasn't been visited and meets the algorithm requirement
 //update next cell with a one, meaning that it has been visited
 //if deadEnd => uturn
@@ -267,7 +363,7 @@ rightVal = analogRead(rightSensor);
 //
 //take action
 //
-//update location
+//update location (in foward Function)
 //read sensor values
 //update motor values based on these readings
 }
@@ -276,48 +372,4 @@ else
 {
 halt();  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
