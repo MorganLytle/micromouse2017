@@ -117,7 +117,7 @@ void forward(int m1Speed, int m2Speed)
   digitalWrite(m2Logic1, LOW); 
   analogWrite(m1Logic2, m1Speed);
   analogWrite(m2Logic2, m2Speed);
-  while (encoderCount1 < tickGoal)
+  while (encoderCount1 < tickGoal)//tick goal is one unit step
   {
   if(digitalRead(encoder1) == 1)
   {
@@ -316,10 +316,20 @@ rightVal = analogRead(rightSensor);
 //
  
 //if intersection => check for unvisited cells
-if((analogRead(leftSensor) <= baseReadingWall + offsetVal)&&(analogRead(middleSensor) <= baseReadingWall + offsetVal)&&(analogRead(rightSensor) <= baseReadingWall + offsetVal))
+if((analogRead(leftSensor) <= baseReadingWall + offsetVal)&&(analogRead(middleSensor) <= baseReadingWall + offsetVal)&&(analogRead(rightSensor) <= baseReadingWall + offsetVal)
+    &&(
+
 //left, forward, or right
 {
   
+  if((wallFollowStatus == 0)
+  {
+    right();
+  }
+  else
+  {
+      left();
+  }
 }
 
 if((analogRead(leftSensor) <= baseReadingWall + offsetVal)&&(analogRead(middleSensor) <= baseReadingWall + offsetVal)&&(analogRead(rightSensor) >= baseReadingWall + offsetVal))
@@ -365,7 +375,8 @@ if((analogRead(leftSensor) >= baseReadingWall + offsetVal)&&(analogRead(middleSe
 //
 //update location (in foward Function)
 //read sensor values
-//update motor values based on these readings
+//update motorSpeed values based on these readings
+
 }
 
 else
